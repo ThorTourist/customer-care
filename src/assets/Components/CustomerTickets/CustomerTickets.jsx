@@ -35,7 +35,7 @@ const CustomerTickets = ({
     // add to resolved
     setResolvedTickets((prev) => [...prev, { ...ticket, status: "Resolved" }]);
 
-    // counters (never allow negative)
+    // Progress,Ressolve Number Count
     setProgressNumber((prev) => (prev > 0 ? prev - 1 : 0));
     setRessolvedNumber((prev) => prev + 1);
 
