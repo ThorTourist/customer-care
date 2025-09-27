@@ -1,53 +1,51 @@
-import Navbar from '../Navbar/Navbar';
-import calImg from "../../images/ri_calendar-line.png"
-import { use, useState } from 'react';
-import { toast } from 'react-toastify';
+import Navbar from "../Navbar/Navbar";
+import calImg from "../../images/ri_calendar-line.png";
+import { use, useState } from "react";
+import { toast } from "react-toastify";
 
 const CustomerTickets = ({
   ticketPromise,
-  progressNumber,
   setProgressNumber,
   setRessolvedNumber,
 }) => {
   const ticketData = use(ticketPromise);
 
   // Tickets state
-  const [inProgressTickets, setInProgressTickets] = useState(ticketData); // start with all tickets
+  const [inProgressTickets, setInProgressTickets] = useState(ticketData);
   const [resolvedTickets, setResolvedTickets] = useState([]);
 
-  // When ticket clicked → mark as "In Progress"
+  //  "In Progress"
   const handleClicked = (ticket) => {
-    toast("In Progress")
+    toast("In Progress");
     if (ticket.status === "Open") {
       // update ticket status
       const updated = { ...ticket, status: "In Progress" };
       setInProgressTickets((prev) =>
         prev.map((t) => (t.id === ticket.id ? updated : t))
       );
-      setProgressNumber(progressNumber + 1);
+      setProgressNumber((prev) => prev + 1);
     }
   };
 
   // When Complete button clicked
   const handleCompleteBtn = (ticket) => {
-    // remove from inProgress
+    // remove from inProgress list
     setInProgressTickets((prev) => prev.filter((t) => t.id !== ticket.id));
-    // add to resolved
+    // add to resolved listBar
     setResolvedTickets((prev) => [...prev, { ...ticket, status: "Resolved" }]);
 
-    // Progress,Ressolve Number Count
+    // Progress,Ressolve Number Counting 
     setProgressNumber((prev) => (prev > 0 ? prev - 1 : 0));
     setRessolvedNumber((prev) => prev + 1);
 
-    toast("Completed")
+    toast("Completed");
   };
 
   return (
     <div className="max-w-[1140px] mx-auto border-2 bg-gray-100 p-1">
       <h1 className="font-bold text-2xl">Customer Tickets</h1>
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
-
-        {/* Customer Ticket List */}
+      
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-9">
           {inProgressTickets.map((ticket) => (
             <div
@@ -116,57 +114,64 @@ const CustomerTickets = ({
           ))}
         </div>
 
-        {/* Sidebar */}
+        
         <aside className=" col-span-1 mx-auto md:col-span-3">
           {/* In Progress Section */}
           <div>
             <h1 className="font-bold text-xl">Task Status</h1>
-            {inProgressTickets
-              .filter((t) => t.status === "In Progress")
-              .map((ticket) => (
-                <div
-                  key={ticket.id}
-                  className=" p-2 bg-white shadow-2xl mt-5"
-                >
-                  <h1>{ticket.title}</h1>
-                  <button
-                    onClick={() => handleCompleteBtn(ticket)}
-                    className="btn bg-green-600 w-full text-white"
-                  >
-                    Complete
-                  </button>
-                </div>
-              ))}
+            {inProgressTickets.filter((t) => t.status === "In Progress")
+              .length > 0 ? (
+              inProgressTickets
+                .filter((t) => t.status === "In Progress")
+                .map((ticket) => (
+                  <div key={ticket.id} className="p-2 bg-white shadow-2xl mt-5">
+                    <h1>{ticket.title}</h1>
+                    <button
+                      onClick={() => handleCompleteBtn(ticket)}
+                      className="btn bg-green-600 w-full text-white"
+                    >
+                      Complete
+                    </button>
+                  </div>
+                ))
+            ) : (
+              <p className="text-gray-400 mt-5">No tasks in progress</p>
+            )}
           </div>
 
           {/* Resolved Section */}
           <div className="mt-5">
             <h1 className="font-bold text-xl">Resolved Task</h1>
-            {resolvedTickets.map((ticket) => (
-              <div
-                key={ticket.id}
-                className="p-3 bg-green-50 border border-green-200 rounded-lg shadow mt-3 flex justify-between items-center"
-              >
-                <div>
-                  <h1 className="font-semibold text-gray-800">{ticket.title}</h1>
-                  <p className="text-green-600 font-medium flex items-center gap-1">
-                    ✓ Completed
-                  </p>
-                </div>
-
-                {/* Remove text */}
-                <button
-                  onClick={() =>
-                    setResolvedTickets((prev) =>
-                      prev.filter((t) => t.id !== ticket.id)
-                    )
-                  }
-                  className="text-sm text-gray-400 hover:text-red-500 transition"
+            {resolvedTickets.length > 0 ? (
+              resolvedTickets.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className="p-3 bg-green-50 border border-green-200 rounded-lg shadow mt-3 flex justify-between items-center"
                 >
-                  Click to remove
-                </button>
-              </div>
-            ))}
+                  <div>
+                    <h1 className="font-semibold text-gray-800">
+                      {ticket.title}
+                    </h1>
+                    <p className="text-green-600 font-medium flex items-center gap-1">
+                      ✓ Completed
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      setResolvedTickets((prev) =>
+                        prev.filter((t) => t.id !== ticket.id)
+                      )
+                    }
+                    className="text-sm text-gray-400 hover:text-red-500 transition"
+                  >
+                    Click to remove
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 mt-3">No resolved tasks yet</p>
+            )}
           </div>
         </aside>
       </div>
