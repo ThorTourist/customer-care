@@ -8,7 +8,7 @@ import Navbar from './assets/Components/Navbar/Navbar';
 import Footer from '../src/assets/Components/Footer/Footer';
 import { Suspense, useState } from 'react';
 
-
+import { ToastContainer } from "react-toastify";
 
 
 const fetchTickets = async() => {
@@ -39,7 +39,6 @@ function App() {
         ressolvedNumber={ressolvedNumber}
         progressNumber={progressNumber}
       ></Banner>
-
       <Suspense
         fallback={<span className="loading loading-infinity loading-xl"></span>}
       >
@@ -51,10 +50,11 @@ function App() {
           ticketPromise={ticketPromise}
         ></CustomerTickets>
       </Suspense>
-
       <Footer></Footer>
+      <ToastContainer />;
     </>
   );
+  
 }
 
 export default App
